@@ -223,7 +223,7 @@ void DynMultiBodyPrivate::NewtonEulerAlgorithm(MAL_S3_VECTOR(&PosForRoot,double)
 	  JointPrivate * aJoint = (JointPrivate *)m_JointVector[j];
 	  if (aJoint!=0)
 	    {
-	      DynamicBodyPrivate *aDB = (DynamicBodyPrivate *) aJoint->linkedBody();
+	      DynamicBodyPrivate *aDB = aJoint->linkedDBody();
 	      if (aDB!=0)
 		{
 		  StateRankComputed = true;

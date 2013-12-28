@@ -73,7 +73,7 @@ JointFreeflyerPrivate::~JointFreeflyerPrivate()
 bool JointFreeflyerPrivate::updateVelocity(const vectorN &,
 					   const vectorN & inRobotSpeedVector)
 {
-  DynamicBodyPrivate* currentBody = (DynamicBodyPrivate*)(linkedBody());
+  DynamicBodyPrivate* currentBody = linkedDBody();
 
   for(unsigned int i=0;i<3;i++)
     {
@@ -90,7 +90,7 @@ bool JointFreeflyerPrivate::updateAcceleration(const vectorN & ,
 					       const vectorN & ,
 					       const vectorN & inRobotAccelerationVector)
 {
-  DynamicBodyPrivate* currentBody = (DynamicBodyPrivate*)(linkedBody());
+  DynamicBodyPrivate* currentBody = linkedDBody();
 
   for(unsigned int i=0;i<3;i++)
     {
@@ -109,7 +109,7 @@ const matrixNxP & JointFreeflyerPrivate::pcalc(const vectorN & )
   MAL_MATRIX_RESIZE(m_phi,6,6);
   MAL_MATRIX_FILL(m_phi,0);
 
-  DynamicBodyPrivate* CurrentBody = (DynamicBodyPrivate*)(linkedBody());
+  DynamicBodyPrivate* CurrentBody = linkedDBody();
   MAL_S3x3_MATRIX_TYPE(double) currentBodyRt;
   currentBodyRt = MAL_S3x3_RET_TRANSPOSE(CurrentBody->R);
   for (unsigned int i=0;i<3;i++)

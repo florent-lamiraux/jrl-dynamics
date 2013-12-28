@@ -40,7 +40,7 @@
 class CjrlJoint;
 
 namespace dynamicsJRLJapan {
-
+  class DynamicBodyPrivate;
   /** \ingroup userclasses
      \brief This class implements a body
 
@@ -50,7 +50,7 @@ namespace dynamicsJRLJapan {
   {
   public:
 
-    boost::shared_ptr<CjrlBody> m_privateObj;
+    DynamicBodyPrivate* m_privateObj;
 
     /**
        \name Constructor and destructor

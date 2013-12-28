@@ -322,24 +322,8 @@ void DynMultiBodyPrivate::InitializeFromJointsTree()
         If a body has already been attached to the joint,
         keep inertial information
       */
-      DynamicBodyPrivate* lCurrentBody = NULL;
-      CjrlBody* jrlBody = CurrentJoint->linkedBody();
-      if (jrlBody != NULL) {
-	lCurrentBody = dynamic_cast<DynamicBodyPrivate*>(jrlBody);
-
-	if (lCurrentBody) {
-	  lCurrentBody->localCenterOfMass(jrlBody->localCenterOfMass());
-	}
-	else if (DynamicBody* dBody = dynamic_cast<DynamicBody*>(jrlBody)) {
-	  lCurrentBody = dynamic_cast<DynamicBodyPrivate*>(dBody->m_privateObj.get());
-	} else {
-	  std::cerr <<
-	    "dynamicsJRLJapan: body is not of ab expected type."
-		    << std::endl;
-	  throw(0);
-	}
-      }
-      else
+      DynamicBodyPrivate* lCurrentBody = CurrentJoint->linkedDBody();
+      if (lCurrentBody == 0)
         {
 	  lCurrentBody = new DynamicBodyPrivate();
 	  lCurrentBody->setInertie(mi);
@@ -369,7 +353,7 @@ void DynMultiBodyPrivate::InitializeFromJointsTree()
       if (NextCurrentJoint==0)
         {
 	  // If a father exist.
-	  FatherJoint = (dynamicsJRLJapan::JointPrivate *)CurrentJoint->parentJoint();
+	  FatherJoint = CurrentJoint->m_FatherJoint;
 	  Depth--;
 
 	  while( (FatherJoint!=0) &&
@@ -397,7 +381,7 @@ void DynMultiBodyPrivate::InitializeFromJointsTree()
                 {
 		  // otherwise move upward.
 		  CurrentJoint =FatherJoint;
-		  FatherJoint=(dynamicsJRLJapan::JointPrivate *)FatherJoint->parentJoint();
+		  FatherJoint=FatherJoint->m_FatherJoint;
 		  Depth--;
                 }
             }

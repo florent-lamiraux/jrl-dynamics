@@ -50,6 +50,7 @@ JointPrivate::JointPrivate(int ltype, MAL_S3_VECTOR_TYPE(double) & laxis,
   MAL_S4x4_MATRIX_SET_IDENTITY(m_globalPoseAtConstruction);
   MAL_S4x4_MATRIX_SET_IDENTITY(m_globalPoseAtConstructionNormalized);
   m_FromRootToThis.push_back(this);
+  m_FromRootToThisPrivate.push_back(this);
   CreateLimitsArray();
 
   /*! Initialize spatial quantities */
@@ -73,6 +74,7 @@ JointPrivate::JointPrivate(int ltype, MAL_S3_VECTOR_TYPE(double) & laxis,
   m_poseInParentFrame(),
   m_FatherJoint(0),
   m_FromRootToThis(),
+  m_FromRootToThisPrivate(),
   m_Body(0),
   m_dynBody(),
   m_Name(),
@@ -111,6 +113,7 @@ JointPrivate::JointPrivate(int ltype, MAL_S3_VECTOR_TYPE(double) & laxis,
   MAL_S4x4_MATRIX_ACCESS_I_J(m_poseInParentFrame,1,3) = translationStatic[1];
   MAL_S4x4_MATRIX_ACCESS_I_J(m_poseInParentFrame,2,3) = translationStatic[2];
   m_FromRootToThis.push_back(this);
+  m_FromRootToThisPrivate.push_back(this);
 
   CreateLimitsArray();
 
@@ -135,6 +138,7 @@ JointPrivate::JointPrivate(int ltype, MAL_S3_VECTOR_TYPE(double) & laxis,
   MAL_S4x4_MATRIX_SET_IDENTITY(m_globalPoseAtConstructionNormalized);
   MAL_S4x4_MATRIX_SET_IDENTITY(m_poseInParentFrame);
   m_FromRootToThis.push_back(this);
+  m_FromRootToThisPrivate.push_back(this);
   CreateLimitsArray();
 
   /*! Initialize spatial quantities */
@@ -153,6 +157,7 @@ JointPrivate::JointPrivate(const JointPrivate &r)
   m_Name=r.getName();
   m_IDinActuated=r.getIDinActuated();
   m_FromRootToThis.push_back(this);
+  m_FromRootToThisPrivate.push_back(this);
   m_poseInParentFrame = r.pose();
   m_inGlobalFrame = r.getinGlobalFrame();
   m_Body = 0;
@@ -194,6 +199,7 @@ JointPrivate::JointPrivate():
 
   m_type = FREE_JOINT;
   m_FromRootToThis.push_back(this);
+  m_FromRootToThisPrivate.push_back(this);
   CreateLimitsArray();
 
   /*! Initialize spatial quantities */
@@ -255,6 +261,7 @@ JointPrivate & JointPrivate::operator=(const JointPrivate & r)
   m_Name=r.getName();
   m_IDinActuated=r.getIDinActuated();
   m_FromRootToThis.push_back(this);
+  m_FromRootToThisPrivate.push_back(this);
   m_inGlobalFrame = r.getinGlobalFrame();
 
   const  MAL_S4x4_MATRIX_TYPE(double) & aGlobalPoseAtConstructionNormalized
@@ -331,7 +338,7 @@ void JointPrivate::UpdatePoseFrom6DOFsVector(MAL_VECTOR_TYPE(double) a6DVector)
   MAL_S4x4_MATRIX_ACCESS_I_J(m_poseInParentFrame,1,3) = a6DVector(1);
   MAL_S4x4_MATRIX_ACCESS_I_J(m_poseInParentFrame,2,3) = a6DVector(2);
 
-  DynamicBodyPrivate* body = dynamic_cast<DynamicBodyPrivate*>(m_Body);
+  DynamicBodyPrivate* body = m_dynBody;
   if (!body)
     {
       std::cerr << "m_Body is not an instance of DynamicBodyPrivate" << std::endl;
@@ -420,7 +427,7 @@ RodriguesRotation(vector3d& inAxis, double inAngle, matrix3d& outRotation)
 
 void JointPrivate::updateWorldCoMPosition()
 {
-  DynamicBodyPrivate* currentBody = (DynamicBodyPrivate*)(linkedBody());
+  DynamicBodyPrivate* currentBody = m_dynBody;
   vector3d NE_cl,lc = currentBody->localCenterOfMass();
   MAL_S3x3_C_eq_A_by_B(m_wlc,
 		       currentBody->R,lc);
@@ -429,7 +436,7 @@ void JointPrivate::updateWorldCoMPosition()
 
 void JointPrivate::updateMomentum()
 {
-  DynamicBodyPrivate* currentBody = (DynamicBodyPrivate*)(linkedBody());
+  DynamicBodyPrivate* currentBody = m_dynBody;
   vector3d NE_tmp,NE_tmp2, NE_tmp3;
   matrix3d NE_Rt;
   // Computes momentum matrix P.
@@ -458,7 +465,7 @@ void JointPrivate::updateMomentum()
 
 void JointPrivate::updateAccelerationCoM()
 {
-  DynamicBodyPrivate* currentBody = (DynamicBodyPrivate*)(linkedBody());
+  DynamicBodyPrivate* currentBody = m_dynBody;
   vector3d lc = currentBody->localCenterOfMass();
   vector3d NE_tmp2,NE_tmp3;
 
@@ -486,7 +493,7 @@ void JointPrivate::updateAccelerationCoM()
 
 void JointPrivate::updateTorqueAndForce()
 {
-  DynamicBodyPrivate * CurrentBody = (DynamicBodyPrivate*)(linkedBody());
+  DynamicBodyPrivate * CurrentBody = m_dynBody;
 
   MAL_S3x3_MATRIX_TYPE(double) aRt;
 
@@ -560,7 +567,7 @@ void JointPrivate::updateTorqueAndForce()
       JointPrivate * ChildJoint = m_Children[IndexChild];
       if (ChildJoint!=0)
 	{
-	  DynamicBodyPrivate *ChildBody = ChildJoint->linkedDBody();
+	  DynamicBodyPrivate *ChildBody = ChildJoint->m_dynBody;
 
 	  //cout << "Child Bodies : " << Child->getName() << endl;
 	  aRt = MAL_S3x3_RET_A_by_B(ChildBody->R_static,ChildBody->Riip1);

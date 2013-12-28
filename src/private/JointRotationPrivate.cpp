@@ -76,11 +76,11 @@ bool JointRotationPrivate::updateVelocity(const vectorN &,
 					  const vectorN &inRobotSpeedVector)
 {
 //	std::cout << "in Rotation update vel" << std::endl;
-  DynamicBodyPrivate* currentBody = (DynamicBodyPrivate*)(linkedBody());
+  DynamicBodyPrivate* currentBody = linkedDBody();
   DynamicBodyPrivate* currentMotherBody = 0;
   vector3d NE_tmp, NE_tmp2;
-  if (parentJoint()!=0)
-    currentMotherBody = (DynamicBodyPrivate*)(parentJoint()->linkedBody());
+  if (m_FatherJoint!=0)
+    currentMotherBody = m_FatherJoint->linkedDBody();
 
   currentBody->dq = inRobotSpeedVector(rankInConfiguration());
   matrix3d RstaticT = MAL_S3x3_RET_TRANSPOSE(currentBody->R_static);
@@ -132,12 +132,12 @@ bool JointRotationPrivate::updateAcceleration(const vectorN &,
 					      const vectorN &inRobotAccelerationVector)
 {
 
-  DynamicBodyPrivate* currentBody = (DynamicBodyPrivate*)(linkedBody());
+  DynamicBodyPrivate* currentBody = linkedDBody();
   matrix3d RstaticT = MAL_S3x3_RET_TRANSPOSE(currentBody->R_static);
   DynamicBodyPrivate* currentMotherBody = 0;
   vector3d NE_tmp, NE_tmp2, NE_tmp3, NE_RotByMotherdv;
-  if (parentJoint()!=0)
-    currentMotherBody = (DynamicBodyPrivate*)(parentJoint()->linkedBody());
+  if (m_FatherJoint!=0)
+    currentMotherBody = m_FatherJoint->linkedDBody();
 
   currentBody->ddq = inRobotAccelerationVector(rankInConfiguration());
 

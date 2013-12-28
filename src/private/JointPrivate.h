@@ -126,11 +126,14 @@ namespace dynamicsJRLJapan
     */
     matrix4d m_poseInParentFrame;
 
+  public:
     /*! Father joint */
     JointPrivate * m_FatherJoint;
 
+  private:
     /*! Vector of joints from the root to this joint. */
     std::vector< CjrlJoint*> m_FromRootToThis;
+    std::vector< JointPrivate*> m_FromRootToThisPrivate;
 
     /*! Pointer towards the body. */
     CjrlBody * m_Body;

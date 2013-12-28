@@ -56,16 +56,8 @@ const Spatial::PluckerTransform & JointPrivate::X0()
 
 DynamicBodyPrivate * JointPrivate::getLinkedDynamicBodyPrivate() 
 {
-  DynamicBodyPrivate* currentBody = dynamic_cast<DynamicBodyPrivate*>(linkedBody());
+  DynamicBodyPrivate* currentBody = m_dynBody;
 
-  if (currentBody==0)
-    {
-      DynamicBody * inBody = dynamic_cast<DynamicBody *>(linkedBody());
-      if (inBody!=0)
-	{
-	  currentBody = dynamic_cast<DynamicBodyPrivate *>(inBody->m_privateObj.get());
-	}
-    }
   return currentBody;
 }
 
@@ -73,11 +65,10 @@ DynamicBodyPrivate * JointPrivate::getMotherDynamicBodyPrivate()
 {
   DynamicBodyPrivate* currentMotherBody = 0;
   
-  if (parentJoint()!=0)
+  if (m_FatherJoint!=0)
     {
-      JointPrivate * aJP = dynamic_cast<JointPrivate *>(parentJoint());
-      if (aJP!=0)
-	currentMotherBody = aJP->getLinkedDynamicBodyPrivate();
+      JointPrivate * aJP = m_FatherJoint;
+      currentMotherBody = aJP->getLinkedDynamicBodyPrivate();
     }
   return currentMotherBody;
 }
@@ -228,8 +219,8 @@ void JointPrivate::initXL()
   
   matrix3d lR_c;
   MAL_S3x3_MATRIX_SET_IDENTITY(lR_c);
-  linkedDBody()->sXilc = Spatial::PluckerTransform(lR_c,
-						 linkedBody()->localCenterOfMass());
+  m_dynBody->sXilc = Spatial::PluckerTransform
+    (lR_c, m_dynBody->localCenterOfMass());
 
 }
 

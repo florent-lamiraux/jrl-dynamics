@@ -34,20 +34,16 @@ using namespace dynamicsJRLJapan;
 
 DynamicBody::DynamicBody()
 {
-  CjrlBody* obj = new DynamicBodyPrivate();
-  m_privateObj = boost::shared_ptr<CjrlBody>(obj);
+  m_privateObj = new DynamicBodyPrivate();
 }
 
 DynamicBody::DynamicBody(const DynamicBody& inBody)
 {
-  DynamicBodyPrivate *aDBP = dynamic_cast<DynamicBodyPrivate *>(inBody.m_privateObj.get());
-  CjrlBody* obj = 0;
-  if (aDBP!=0)
-    obj= new DynamicBodyPrivate(*aDBP);
-  m_privateObj = boost::shared_ptr<CjrlBody>(obj);
+  DynamicBodyPrivate *aDBP = inBody.m_privateObj;
+  m_privateObj = new DynamicBodyPrivate(*aDBP);
 }
 
-#define DERIVPRIVATE dynamic_cast<DynamicBodyPrivate *>(m_privateObj.get())
+#define DERIVPRIVATE m_privateObj
 
 const vector3d& DynamicBody::localCenterOfMass() const
 {

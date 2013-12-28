@@ -60,7 +60,7 @@ void DynMultiBodyPrivate::BackwardDynamics(DynamicBodyPrivate & CurrentBody )
       /* TODO: These two "if" should be "assert", isn't it? */
       if (aJoint!=0)
         {
-	  DynamicBodyPrivate *aDB = (DynamicBodyPrivate *) aJoint->linkedBody();
+	  DynamicBodyPrivate *aDB = aJoint->linkedDBody();
 	  if (aDB!=0)
             {
 	      StateRankComputed = true;

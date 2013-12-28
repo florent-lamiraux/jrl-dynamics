@@ -46,7 +46,8 @@ void JointPrivate::computeLocalAndGlobalPoseFromGlobalFrame()
 
   /* Get global pose of parent joint */
   MAL_S4x4_MATRIX_TYPE( double) invParentGlobalPose;
-  MAL_S4x4_INVERSE(m_FatherJoint->m_globalPoseAtConstruction, invParentGlobalPose, double);
+  MAL_S4x4_INVERSE(m_FatherJoint->m_globalPoseAtConstruction,
+		   invParentGlobalPose, double);
   MAL_S4x4_MATRIX_TYPE( double) jointGlobalPose = m_globalPoseAtConstruction;
   /*
     parent     /  global \  -1   global
@@ -55,7 +56,8 @@ void JointPrivate::computeLocalAndGlobalPoseFromGlobalFrame()
   */
   m_globalPoseAtConstructionNormalized = m_globalPoseAtConstruction;
   m_poseInParentFrame = MAL_S4x4_RET_A_by_B(invParentGlobalPose, jointGlobalPose);
-  ODEBUG(" m_FatherJoint->m_globalPoseAtConstruction=" << m_FatherJoint->m_globalPoseAtConstruction);
+  ODEBUG(" m_FatherJoint->m_globalPoseAtConstruction=" <<
+	 m_FatherJoint->m_globalPoseAtConstruction);
   ODEBUG(" invParentGlobalPose=" << invParentGlobalPose);
   ODEBUG(" jointGlobalPose=" << jointGlobalPose);
   ODEBUG(" m_poseInParentFrame=" << m_poseInParentFrame);
@@ -92,16 +94,13 @@ void JointPrivate::NormalizeRotationFromAxis(vector4d &Axis, matrix3d &Normalize
   v1[2] = Axis[2];
   v2[0] = v2[1]=v2[2]=0.0;
   unsigned int smallestComponent=0;
-  double valueSmallestComponent = fabs(v1[0]);
 
   if (fabs(v1[1]) < fabs(v1[smallestComponent])) {
     smallestComponent = 1;
-    valueSmallestComponent = fabs(v1[1]);
   }
 
   if (fabs(v1[2]) < fabs(v1[smallestComponent])) {
     smallestComponent = 2;
-    valueSmallestComponent = fabs(v1[2]);
   }
   // (v1, v2, v3) form an orthonormal basis
   v2[smallestComponent] = 1.0;

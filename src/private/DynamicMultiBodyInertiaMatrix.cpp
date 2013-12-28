@@ -52,7 +52,6 @@ void DynMultiBodyPrivate::computeInertiaMatrix()
 
   MAL_MATRIX_FILL(m_InertiaMatrix,0);
 
-  unsigned int rank;
   DynamicBodyPrivate* aBody;
 
   for(unsigned int i=1;i<m_listOfBodies.size();i++)
@@ -60,7 +59,6 @@ void DynMultiBodyPrivate::computeInertiaMatrix()
       aBody=  m_listOfBodies[i];
       const JointPrivate * aJoint=(const JointPrivate *)aBody->joint();
 
-      rank = aJoint->rankInConfiguration();
       matrixNxP pJacobian;
       MAL_MATRIX_RESIZE(pJacobian, 6, numberDof());
       vector3d aCoM = aBody->localCenterOfMass();

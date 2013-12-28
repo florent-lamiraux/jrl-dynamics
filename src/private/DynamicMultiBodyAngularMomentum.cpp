@@ -59,16 +59,12 @@ void DynMultiBodyPrivate::angularMomentumWrtToPt(vector3d &, vector3d & angularm
   matrix3d NE_Rtmp, NE_Rt, NE_Ro, NE_Rot;
   /* End of intermediate */
 
-  DynamicBodyPrivate *aDB=0;
   int currentNode = labelTheRoot;
   currentNode = m_listOfBodies[labelTheRoot]->child;
   vector3d lL(0.0,0.0,0.0);
 
   do
     {
-
-      aDB = m_listOfBodies[currentNode];
-
       NE_lP = m_listOfBodies[currentNode]->P;
       ODEBUG("P: " << NE_lP );
       NE_lw_c = m_listOfBodies[currentNode]->w_c - positionCoMPondere;
@@ -172,7 +168,6 @@ void DynMultiBodyPrivate::getJacobianAngularMomentumWrtCoM(matrixNxP &outjacobia
 
   MAL_MATRIX_FILL(outjacobian,0);
 
-  unsigned int rank;
   JointPrivate* aJoint;
   DynamicBodyPrivate* aBody;
 
@@ -183,7 +178,6 @@ void DynMultiBodyPrivate::getJacobianAngularMomentumWrtCoM(matrixNxP &outjacobia
 
       aJoint = m_ConfigurationToJoints[i];
       aBody=  aJoint->linkedDBody();
-      rank = aJoint->rankInConfiguration();
 
       matrixNxP pJacobian;
       vector3d av(0,0,0); // Dummy

@@ -30,6 +30,8 @@
 
 #include "Debug.h"
 
+#include <jrl/mal/matrixabstractlayer.hh>
+#include <jrl/dynamics/dynamicbody.hh>
 #include "JointPrivate.h"
 #include "DynamicBodyPrivate.h"
 
@@ -85,17 +87,15 @@ std::vector<CjrlJoint*> JointPrivate::jointsFromRootToThis() const
 
 const MAL_S4x4_MATRIX_TYPE(double) & JointPrivate::currentTransformation() const
 {
-  DynamicBodyPrivate *m_DBody = (DynamicBodyPrivate *) m_Body;
-  if (m_DBody==0)
+  if (m_dynBody==0)
     return m_globalPoseAtConstruction;
-  return m_DBody->m_transformation;
+  return m_dynBody->m_transformation;
 }
 
 CjrlRigidVelocity JointPrivate::jointVelocity() const
 {
 
-  DynamicBodyPrivate *m_DBody = dynamic_cast<DynamicBodyPrivate *>(m_Body);
-  CjrlRigidVelocity ajrlRV(m_DBody->v0,m_DBody->w);
+  CjrlRigidVelocity ajrlRV(m_dynBody->v0,m_dynBody->w);
   return ajrlRV;
 }
 
@@ -103,9 +103,9 @@ void JointPrivate::computeSubTreeMCom()
 {
 
   for (unsigned int Id = 0; Id< 3;Id++)
-    m_STmcom[Id] = linkedDBody()->massCoef()*linkedDBody()->w_c[Id];
+    m_STmcom[Id] = m_dynBody->massCoef()*m_dynBody->w_c[Id];
 
-  m_STcoef = linkedDBody()->massCoef();
+  m_STcoef = m_dynBody->massCoef();
 
   for (unsigned int Id = 0; Id< countChildJoints();Id++)
     {
@@ -118,9 +118,9 @@ void JointPrivate::computeSubTreeMCom()
 void JointPrivate::computeSubTreeMComExceptChild(const CjrlJoint* inJoint)
 {
   for (unsigned int Id = 0; Id< 3;Id++)
-    m_STmcom[Id] = linkedDBody()->massCoef()*linkedDBody()->w_c[Id];
+    m_STmcom[Id] = m_dynBody->massCoef()*m_dynBody->w_c[Id];
 
-  m_STcoef = linkedDBody()->massCoef();
+  m_STcoef = m_dynBody->massCoef();
 
   for (unsigned int Id = 0; Id< countChildJoints();Id++)
     {
@@ -156,12 +156,10 @@ CjrlRigidAcceleration JointPrivate::jointAcceleration() const
 {
   MAL_S3_VECTOR_TYPE(double) a,b;
 
-  if (m_Body!=0)
+  if (m_dynBody!=0)
     {
-      DynamicBodyPrivate *m_DBody = dynamic_cast<DynamicBodyPrivate *>(m_Body);
-
-      a = m_DBody->dv;
-      b = m_DBody->dw;
+      a = m_dynBody->dv;
+      b = m_dynBody->dw;
     }
   CjrlRigidAcceleration ajrlRA(a,b);
 
@@ -194,15 +192,14 @@ void JointPrivate::getJacobianWorldPointWrtConfig(const vector3d& inPointWorldFr
 {
   vector3d dp,lv;
 
-  ODEBUG("Size of the jacobian :" << m_FromRootToThis.size()-1);
+  ODEBUG("Size of the jacobian :" << m_FromRootToThisPrivate.size()-1);
 
-  for(unsigned int i=0;i<m_FromRootToThis.size();i++)
+  for(unsigned int i=0;i<m_FromRootToThisPrivate.size();i++)
     {
       MAL_VECTOR_DIM(LinearAndAngularVelocity,double,6);
 
-      DynamicBodyPrivate * aBody= static_cast<DynamicBodyPrivate *>
-	(m_FromRootToThis[i]->linkedBody());
-      JointPrivate * aJoint = static_cast<JointPrivate *>(m_FromRootToThis[i]);
+      DynamicBodyPrivate * aBody= m_FromRootToThisPrivate[i]->m_dynBody;
+      JointPrivate * aJoint = m_FromRootToThisPrivate[i];
 
       unsigned int lcol = aJoint->stateVectorPosition();
       ODEBUG("JointPrivate: " << aJoint->getName() << " " << lcol);
@@ -289,7 +286,7 @@ void JointPrivate::getJacobianPointWrtConfig(const vector3d& inPointJointFrame, 
 
 CjrlBody* JointPrivate::linkedBody() const
 {
-  return m_Body;
+  return m_dynBody;
 }
 
 DynamicBodyPrivate* JointPrivate::linkedDBody() const
@@ -299,8 +296,19 @@ DynamicBodyPrivate* JointPrivate::linkedDBody() const
 
 void JointPrivate::setLinkedBody(CjrlBody& inBody)
 {
-  m_Body = &inBody;
-  m_dynBody = (DynamicBodyPrivate*)m_Body;
+  DynamicBody* dynamicBody = dynamic_cast <DynamicBody*> (&inBody);
+  if (dynamicBody) {
+    m_Body = dynamicBody->m_privateObj;
+    m_dynBody = dynamicBody->m_privateObj;
+  } else {
+    DynamicBodyPrivate* priv = dynamic_cast <DynamicBodyPrivate*> (&inBody);
+    if (priv) {
+      m_Body = priv;
+      m_dynBody = priv;
+    } else {
+      abort ();
+    }
+  }
   resizeSpatialFields();
 }
 
@@ -316,14 +324,17 @@ void JointPrivate::SetFatherJoint(JointPrivate *aFather)
   m_FatherJoint = aFather;
 
   m_FromRootToThis.clear();
+  m_FromRootToThisPrivate.clear();
 
   m_FromRootToThis.push_back(this);
+  m_FromRootToThisPrivate.push_back(this);
 
-  CjrlJoint* aJoint = m_FatherJoint;
+  JointPrivate* aJoint = m_FatherJoint;
   while(aJoint!=0)
     {
       m_FromRootToThis.insert(m_FromRootToThis.begin(),aJoint);
-      aJoint = aJoint->parentJoint();
+      m_FromRootToThisPrivate.insert(m_FromRootToThisPrivate.begin(),aJoint);
+      aJoint = aJoint->m_FatherJoint;
     }
 }
 

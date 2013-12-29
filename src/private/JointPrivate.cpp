@@ -45,6 +45,7 @@ JointPrivate::JointPrivate(int ltype, MAL_S3_VECTOR_TYPE(double) & laxis,
   m_poseInParentFrame(lpose),
   m_FatherJoint(0),
   m_Body(0),
+  m_dynBody (0),
   m_IDinActuated(-1)
 {
   MAL_S4x4_MATRIX_SET_IDENTITY(m_globalPoseAtConstruction);
@@ -76,7 +77,7 @@ JointPrivate::JointPrivate(int ltype, MAL_S3_VECTOR_TYPE(double) & laxis,
   m_FromRootToThis(),
   m_FromRootToThisPrivate(),
   m_Body(0),
-  m_dynBody(),
+  m_dynBody (0),
   m_Name(),
   m_IDinActuated(-1),
   m_LowerLimits(),
@@ -132,6 +133,7 @@ JointPrivate::JointPrivate(int ltype, MAL_S3_VECTOR_TYPE(double) & laxis,
   m_quantity(lquantite),
   m_FatherJoint(0),
   m_Body(0),
+  m_dynBody (0),
   m_IDinActuated(-1)
 {
   MAL_S4x4_MATRIX_SET_IDENTITY(m_globalPoseAtConstruction);
@@ -161,6 +163,7 @@ JointPrivate::JointPrivate(const JointPrivate &r)
   m_poseInParentFrame = r.pose();
   m_inGlobalFrame = r.getinGlobalFrame();
   m_Body = 0;
+  m_dynBody = 0;
   m_nbDofs = r.m_nbDofs;
   m_globalPoseAtConstruction = r.m_globalPoseAtConstruction;
   m_globalPoseAtConstructionNormalized = r.initialPosition();
@@ -188,6 +191,7 @@ JointPrivate::JointPrivate():
   m_quantity(0.0),
   m_FatherJoint(0),
   m_Body(0),
+  m_dynBody (0),
   m_IDinActuated(-1)
 {
   MAL_S3_VECTOR_ACCESS(m_axis,0) = 0.0;
@@ -269,6 +273,7 @@ JointPrivate & JointPrivate::operator=(const JointPrivate & r)
   m_globalPoseAtConstruction = aGlobalPoseAtConstructionNormalized;
   m_globalPoseAtConstructionNormalized  = aGlobalPoseAtConstructionNormalized ;
   m_Body = 0;
+  m_dynBody = 0;
   m_nbDofs = r.numberDof();
   CreateLimitsArray();
 

@@ -36,7 +36,7 @@ using namespace dynamicsJRLJapan;
 JointFreeflyerPrivate::JointFreeflyerPrivate()
   :JointPrivate()
 {
-  m_dof6D.resize(6,false);
+  m_dof6D.resize(6);
   setnumberDof(6);
   CreateLimitsArray();
 }
@@ -44,7 +44,7 @@ JointFreeflyerPrivate::JointFreeflyerPrivate()
 JointFreeflyerPrivate::JointFreeflyerPrivate(const JointFreeflyerPrivate &a)
   :JointPrivate(a)
 {
-  m_dof6D.resize(6,false);
+  m_dof6D.resize(6);
   setnumberDof(6);
 }
 
@@ -62,7 +62,7 @@ JointFreeflyerPrivate::JointFreeflyerPrivate(const MAL_S4x4_MATRIX_TYPE(double) 
   MAL_S3_VECTOR_ACCESS(laxis,2) = 0.0;
 
   axis(laxis);
-  m_dof6D.resize(6,false);
+  m_dof6D.resize(6);
   setnumberDof(6);
 }
 

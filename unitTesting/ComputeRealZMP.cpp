@@ -26,6 +26,7 @@
  *
  */
 
+#include <iostream>
 #include <string>
 #include <fstream>
 
@@ -93,7 +94,7 @@ void ExtractActualWaist(const CjrlJoint *LeftFoot2,
     {
       CurrentSupportFootPosInWorld = TrLF2;
       CurrentSupportFoot = 1;
-      cout << "Choice 1" << endl;
+      std::cout << "Choice 1" << endl;
     }
   else
     {
@@ -103,32 +104,32 @@ void ExtractActualWaist(const CjrlJoint *LeftFoot2,
 	{
 	  CurrentSupportFootPosInWorld = TrRF2;
 	  CurrentSupportFoot = -1;
-	  cout << "Choice 2" << endl;
+	  std::cout << "Choice 2" << endl;
 	}
       else
 	{
 	  if (PreviousSupportFoot==1)
 	    {
 	      CurrentSupportFootPosInWorld = TrLF2;
-	      cout << "Choice 3" << endl;
+	      std::cout << "Choice 3" << endl;
 	    }
 	  else
 	    {
 	      CurrentSupportFootPosInWorld = TrRF2;
-	      cout << "Choice 4" << endl;
+	      std::cout << "Choice 4" << endl;
 	    }
 	}
     }
-  cout << "CurrentWaistInWorld2" << CurrentWaistInWorld2 << endl;
-  cout << "CurrentSupportFootPosInWorld" << CurrentSupportFootPosInWorld<< endl;
+  std::cout << "CurrentWaistInWorld2" << CurrentWaistInWorld2 << endl;
+  std::cout << "CurrentSupportFootPosInWorld" << CurrentSupportFootPosInWorld<< endl;
 
   matrix4d CurrentWorldPosInSupportFoot;
 
   MAL_S4x4_INVERSE(CurrentSupportFootPosInWorld,CurrentWorldPosInSupportFoot,double);
 
-  cout << "CurrentWorldPosInSupportFoot" << CurrentWorldPosInSupportFoot << endl;
+  std::cout << "CurrentWorldPosInSupportFoot" << CurrentWorldPosInSupportFoot << endl;
   MAL_S4x4_C_eq_A_by_B(CurrentWaistPosInSupportFoot,CurrentWorldPosInSupportFoot,CurrentWaistInWorld2);
-  cout << "CurrentWaistPosInSupportFoot : " << CurrentWaistPosInSupportFoot << endl;
+  std::cout << "CurrentWaistPosInSupportFoot : " << CurrentWaistPosInSupportFoot << endl;
 
   if (NbIt==0)
     {
@@ -153,7 +154,7 @@ void ExtractActualWaist(const CjrlJoint *LeftFoot2,
 	  AbsSupportFootPos = MAL_S4x4_RET_A_by_B(AbsSupportFootPos,
 						  CurrentSupportFootPosInWorld);
 
-	  cout << "Choice 5" <<endl;
+	  std::cout << "Choice 5" <<endl;
 	}
 
       if ((CurrentSupportFoot==-1) && (PreviousSupportFoot==1))
@@ -164,13 +165,13 @@ void ExtractActualWaist(const CjrlJoint *LeftFoot2,
 						  tmp);
 	  AbsSupportFootPos = MAL_S4x4_RET_A_by_B(AbsSupportFootPos,
 						  CurrentSupportFootPosInWorld);
-	  cout << "Choice 6" <<endl;
+	  std::cout << "Choice 6" <<endl;
 	}
 
     }
-  cout << "AbsSupportFootPos : " << AbsSupportFootPos << endl;
+  std::cout << "AbsSupportFootPos : " << AbsSupportFootPos << endl;
   MAL_S4x4_C_eq_A_by_B(CurrentAbsWaistPos,AbsSupportFootPos,CurrentWaistPosInSupportFoot);
-  cout << "CurrentAbsWaistPos: " << CurrentAbsWaistPos << endl;
+  std::cout << "CurrentAbsWaistPos: " << CurrentAbsWaistPos << endl;
 
   {
     const double & nx = MAL_S4x4_MATRIX_ACCESS_I_J(CurrentAbsWaistPos,2,2);
@@ -228,10 +229,10 @@ int main(int argc, char *argv[])
 
       if ((robotpath==0) || (robotname==0))
 	{
-	  cerr << " This program takes 6 arguments: " << endl;
-	  cerr << "./TestHumanoidDynamicRobot PATH_TO_VRML_FILE VRML_FILE_NAME "<< endl;
-	  cerr << " PATH_TO_SPECIFICITIES_XML PATH PATH_TO_MAP_JOINT_2_RANK" << endl;
-	  cerr << " ReferenceLogFile ActualLogFile" << endl;
+	  std::cerr << " This program takes 6 arguments: " << endl;
+	  std::cerr << "./TestHumanoidDynamicRobot PATH_TO_VRML_FILE VRML_FILE_NAME "<< endl;
+	  std::cerr << " PATH_TO_SPECIFICITIES_XML PATH PATH_TO_MAP_JOINT_2_RANK" << endl;
+	  std::cerr << " ReferenceLogFile ActualLogFile" << endl;
 	  exit(-1);
 	}
       else
@@ -270,12 +271,12 @@ int main(int argc, char *argv[])
 
   if (aHDR==0)
     {
-      cerr<< "Dynamic cast on HDR failed " << endl;
+      std::cerr<< "Dynamic cast on HDR failed " << endl;
       exit(-1);
   }
-  cout << "Robot's model file:" << aPath << aName << endl;
-  cout << "Specificities file:" << aSpecificitiesFileName << endl;
-  cout << "Map from joint to rank:" << aMapFromCjrlJointToRank << endl;
+  std::cout << "Robot's model file:" << aPath << aName << endl;
+  std::cout << "Specificities file:" << aSpecificitiesFileName << endl;
+  std::cout << "Map from joint to rank:" << aMapFromCjrlJointToRank << endl;
   string RobotFileName = aPath + aName;
   parseOpenHRPVRMLFile(*aHDR,RobotFileName,
 		       aMapFromCjrlJointToRank,aSpecificitiesFileName);
@@ -311,7 +312,7 @@ int main(int argc, char *argv[])
   ActualStateFile.open(ActualLogFile.c_str(),ifstream::in);
   if (!ActualStateFile.is_open())
     {
-      cerr << "Unable to open actual state file: " <<
+      std::cerr << "Unable to open actual state file: " <<
 	ActualLogFile << endl;
       exit(-1);
     }
@@ -320,7 +321,7 @@ int main(int argc, char *argv[])
   RefStateFile.open(RefLogFile.c_str(),ifstream::in);
   if (!RefStateFile.is_open())
     {
-      cerr << "Unable to open reference state file: " <<
+      std::cerr << "Unable to open reference state file: " <<
 	RefLogFile << endl;
       exit(-1);
     }

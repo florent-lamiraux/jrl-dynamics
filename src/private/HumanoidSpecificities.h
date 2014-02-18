@@ -37,6 +37,7 @@ namespace dynamicsJRLJapan
 
   typedef struct
   {
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     vector3d Center[2];
     vector3d okayAxis[2];
     vector3d showingAxis[2];

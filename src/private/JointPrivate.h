@@ -52,6 +52,8 @@ namespace dynamicsJRLJapan
   */
   class JointPrivate: public CjrlJoint
   {
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   protected:
     /**
        \brief Whether pose was specified in global frame or not

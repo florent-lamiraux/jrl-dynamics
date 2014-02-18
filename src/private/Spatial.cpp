@@ -456,7 +456,7 @@ namespace dynamicsJRLJapan
 
       return Inertia (m_R*(I.I()
 			   + skew(m_p)*skew(I.h())
-			   + skew(tmp)*skew(m_p))*m_R.Transpose(),
+			   + skew(tmp)*skew(m_p))*m_R.transpose(),
 		      m_R*tmp,
 		      I.m());
     }

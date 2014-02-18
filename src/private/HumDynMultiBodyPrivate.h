@@ -60,6 +60,8 @@ namespace dynamicsJRLJapan
   class HumDynMultiBodyPrivate:     public virtual CjrlHumanoidDynamicRobot,
   public DynMultiBodyPrivate
     {
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     private:
 
       /** \brief Store the Left Wrist Joint */

@@ -111,6 +111,8 @@ namespace dynamicsJRLJapan
   */
   class MultiBody
   {
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   protected:
 
     /*!  Robot's mass. */

@@ -250,7 +250,7 @@ void DynMultiBodyPrivate::CalculateZMP(double &px, double &py,
   DynamicBodyPrivate * aDBP= m_RootOfTheJointsTree->linkedDBody();
   // Get the rotation matrix from waist to world frame.
   matrix3d wRwa = aDBP->R;
-  matrix3d waRw = wRwa.Transpose ();
+  matrix3d waRw = wRwa.transpose ();
   // Compute multibody CoM position vector in the Waist frame
   vector3d waPc = waRw * (positionCoMPondere - aDBP->p);
   // Build the Plucker transform from Waist to CoM

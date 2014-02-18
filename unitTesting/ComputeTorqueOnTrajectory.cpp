@@ -24,16 +24,18 @@
  *  Laboratory (JRL)
  *
  */
+
+#include <iostream>
 #include <string>
 #include <fstream>
 
 #include "jrl/mal/matrixabstractlayer.hh"
 #include "jrl/dynamics/dynamicsfactory.hh"
 
-using namespace std;
+//using namespace std;
 using namespace dynamicsJRLJapan;
 
-void ExtractRefWaist(ifstream &RefStateFile,
+void ExtractRefWaist(std::ifstream &RefStateFile,
 		     double *WaistFromRef,
 		     double *RotationFreeFlyer,
 		     double *RefData)
@@ -91,7 +93,7 @@ void ExtractActualWaist(const CjrlJoint *LeftFoot2,
     {
       CurrentSupportFootPosInWorld = TrLF2;
       CurrentSupportFoot = 1;
-      cout << "Choice 1" << endl;
+      std::cout << "Choice 1" << std::endl;
     }
   else
     {
@@ -101,32 +103,32 @@ void ExtractActualWaist(const CjrlJoint *LeftFoot2,
 	{
 	  CurrentSupportFootPosInWorld = TrRF2;
 	  CurrentSupportFoot = -1;
-	  cout << "Choice 2" << endl;
+	  std::cout << "Choice 2" << std::endl;
 	}
       else
 	{
 	  if (PreviousSupportFoot==1)
 	    {
 	      CurrentSupportFootPosInWorld = TrLF2;
-	      cout << "Choice 3" << endl;
+	      std::cout << "Choice 3" << std::endl;
 	    }
 	  else
 	    {
 	      CurrentSupportFootPosInWorld = TrRF2;
-	      cout << "Choice 4" << endl;
+	      std::cout << "Choice 4" << std::endl;
 	    }
 	}
     }
-  cout << "CurrentWaistInWorld2" << CurrentWaistInWorld2 << endl;
-  cout << "CurrentSupportFootPosInWorld" << CurrentSupportFootPosInWorld<< endl;
+  std::cout << "CurrentWaistInWorld2" << CurrentWaistInWorld2 << std::endl;
+  std::cout << "CurrentSupportFootPosInWorld" << CurrentSupportFootPosInWorld<< std::endl;
 
   matrix4d CurrentWorldPosInSupportFoot;
 
   MAL_S4x4_INVERSE(CurrentSupportFootPosInWorld,CurrentWorldPosInSupportFoot,double);
 
-  cout << "CurrentWorldPosInSupportFoot" << CurrentWorldPosInSupportFoot << endl;
+  std::cout << "CurrentWorldPosInSupportFoot" << CurrentWorldPosInSupportFoot << std::endl;
   MAL_S4x4_C_eq_A_by_B(CurrentWaistPosInSupportFoot,CurrentWorldPosInSupportFoot,CurrentWaistInWorld2);
-  cout << "CurrentWaistPosInSupportFoot : " << CurrentWaistPosInSupportFoot << endl;
+  std::cout << "CurrentWaistPosInSupportFoot : " << CurrentWaistPosInSupportFoot << std::endl;
 
   if (NbIt==0)
     {
@@ -151,7 +153,7 @@ void ExtractActualWaist(const CjrlJoint *LeftFoot2,
 	  AbsSupportFootPos = MAL_S4x4_RET_A_by_B(AbsSupportFootPos,
 						  CurrentSupportFootPosInWorld);
 
-	  cout << "Choice 5" <<endl;
+	  std::cout << "Choice 5" <<std::endl;
 	}
 
       if ((CurrentSupportFoot==-1) && (PreviousSupportFoot==1))
@@ -162,13 +164,13 @@ void ExtractActualWaist(const CjrlJoint *LeftFoot2,
 						  tmp);
 	  AbsSupportFootPos = MAL_S4x4_RET_A_by_B(AbsSupportFootPos,
 						  CurrentSupportFootPosInWorld);
-	  cout << "Choice 6" <<endl;
+	  std::cout << "Choice 6" <<std::endl;
 	}
 
     }
-  cout << "AbsSupportFootPos : " << AbsSupportFootPos << endl;
+  std::cout << "AbsSupportFootPos : " << AbsSupportFootPos << std::endl;
   MAL_S4x4_C_eq_A_by_B(CurrentAbsWaistPos,AbsSupportFootPos,CurrentWaistPosInSupportFoot);
-  cout << "CurrentAbsWaistPos: " << CurrentAbsWaistPos << endl;
+  std::cout << "CurrentAbsWaistPos: " << CurrentAbsWaistPos << std::endl;
 
   {
     const double & nx = MAL_S4x4_MATRIX_ACCESS_I_J(CurrentAbsWaistPos,2,2);
@@ -192,15 +194,15 @@ void ExtractActualWaist(const CjrlJoint *LeftFoot2,
 void SaveWaistPositions(double *WaistRef,
 			double *WaistActual)
 {
-  ofstream RebuildWaist;
-  RebuildWaist.open("RebuildWaist.dat",ofstream::app);
+  std::ofstream RebuildWaist;
+  RebuildWaist.open("RebuildWaist.dat",std::ofstream::app);
   for(unsigned int i=0;i<6;i++)
     RebuildWaist  << WaistRef[i] << " ";
 
   for(unsigned int i=0;i<6;i++)
     RebuildWaist  << WaistActual[i] << " ";
 
-  RebuildWaist << endl;
+  RebuildWaist << std::endl;
 
   RebuildWaist.close();
 
@@ -208,14 +210,14 @@ void SaveWaistPositions(double *WaistRef,
 
 int main(int argc, char *argv[])
 {
-  string aSpecificitiesFileName;
-  string aPath;
-  string aName;
-  string aMapFromCjrlJointToRank;
+  std::string aSpecificitiesFileName;
+  std::string aPath;
+  std::string aName;
+  std::string aMapFromCjrlJointToRank;
 
-  string RefLogFile;
-  string ActualLogFile;
-  cout << "argc: " << argc << endl;
+  std::string RefLogFile;
+  std::string ActualLogFile;
+  std::cout << "argc: " << argc << std::endl;
   if (argc!=7)
     {
       const char *envrobotpath="ROBOTPATH";
@@ -227,10 +229,10 @@ int main(int argc, char *argv[])
 
       if ((robotpath==0) || (robotname==0))
 	{
-	  cerr << " This program takes 6 arguments: " << endl;
-	  cerr << "./TestHumanoidDynamicRobot PATH_TO_VRML_FILE VRML_FILE_NAME "<< endl;
-	  cerr << " PATH_TO_SPECIFICITIES_XML PATH PATH_TO_MAP_JOINT_2_RANK" << endl;
-	  cerr << " ReferenceLogFile ActualLogFile" << endl;
+	  std::cerr << " This program takes 6 arguments: " << std::endl;
+	  std::cerr << "./TestHumanoidDynamicRobot PATH_TO_VRML_FILE VRML_FILE_NAME "<< std::endl;
+	  std::cerr << " PATH_TO_SPECIFICITIES_XML PATH PATH_TO_MAP_JOINT_2_RANK" << std::endl;
+	  std::cerr << " ReferenceLogFile ActualLogFile" << std::endl;
 	  exit(-1);
 	}
       else
@@ -273,16 +275,16 @@ int main(int argc, char *argv[])
 
   if (aHDR==0)
     {
-      cerr<< "Dynamic cast on HDR failed " << endl;
+      std::cerr<< "Dynamic cast on HDR failed " << std::endl;
       exit(-1);
   }
-  cout << "Robot's model file:" << aPath << aName << endl;
-  cout << "Specificities file:" << aSpecificitiesFileName << endl;
-  cout << "Map from joint to rank:" << aMapFromCjrlJointToRank << endl;
-  cout << "RegLogFile: "<< RefLogFile << endl;
-  cout << "ActualLogFile: "<< ActualLogFile << endl;
+  std::cout << "Robot's model file:" << aPath << aName << std::endl;
+  std::cout << "Specificities file:" << aSpecificitiesFileName << std::endl;
+  std::cout << "Map from joint to rank:" << aMapFromCjrlJointToRank << std::endl;
+  std::cout << "RegLogFile: "<< RefLogFile << std::endl;
+  std::cout << "ActualLogFile: "<< ActualLogFile << std::endl;
 
-  string RobotFileName = aPath + aName;
+  std::string RobotFileName = aPath + aName;
   parseOpenHRPVRMLFile(*aHDR,RobotFileName,
 		       aMapFromCjrlJointToRank,aSpecificitiesFileName);
   parseOpenHRPVRMLFile(*aHDR2,RobotFileName,
@@ -313,80 +315,80 @@ int main(int argc, char *argv[])
   CjrlJoint * Waist2 = aHDR2->waist();
 
   // Read the data file.
-  ifstream ActualStateFile;
-  ActualStateFile.open(ActualLogFile.c_str(),ifstream::in);
+  std::ifstream ActualStateFile;
+  ActualStateFile.open(ActualLogFile.c_str(),std::ifstream::in);
   if (!ActualStateFile.is_open())
     {
-      cerr << "Unable to open actual state file: " <<
-	ActualLogFile << endl;
+      std::cerr << "Unable to open actual state file: " <<
+	ActualLogFile << std::endl;
       exit(-1);
     }
 
-  ifstream RefStateFile;
-  RefStateFile.open(RefLogFile.c_str(),ifstream::in);
+  std::ifstream RefStateFile;
+  RefStateFile.open(RefLogFile.c_str(),std::ifstream::in);
   if (!RefStateFile.is_open())
     {
-      cerr << "Unable to open reference state file: " <<
-	RefLogFile << endl;
+      std::cerr << "Unable to open reference state file: " <<
+	RefLogFile << std::endl;
       exit(-1);
     }
 
-  ofstream RebuildZMP;
-  RebuildZMP.open("RebuildZMP.dat",ofstream::out);
+  std::ofstream RebuildZMP;
+  RebuildZMP.open("RebuildZMP.dat",std::ofstream::out);
   RebuildZMP.close();
 
-  ofstream RebuildForces;
-  RebuildForces.open("RebuildForces.dat",ofstream::out);
+  std::ofstream RebuildForces;
+  RebuildForces.open("RebuildForces.dat",std::ofstream::out);
   RebuildForces.close();
 
-  ofstream RebuildWaist;
-  RebuildWaist.open("RebuildWaist.dat",ofstream::out);
+  std::ofstream RebuildWaist;
+  RebuildWaist.open("RebuildWaist.dat",std::ofstream::out);
   RebuildWaist.close();
 
   {
-    ofstream RebuildTorques;
-    RebuildTorques.open("RebuildTorques.dat",ofstream::out);
+    std::ofstream RebuildTorques;
+    RebuildTorques.open("RebuildTorques.dat",std::ofstream::out);
     RebuildTorques.close();
   }
   // Set properties for the first model.
   {
-    string inProperty[4]={"TimeStep","ComputeAcceleration",
+    std::string inProperty[4]={"TimeStep","ComputeAcceleration",
 			  "ComputeBackwardDynamics", "ComputeZMP"};
-    string inValue[4]={"0.005","true","true","true"};
+    std::string inValue[4]={"0.005","true","true","true"};
     for(unsigned int i=0;i<4;i++)
       aHDR->setProperty(inProperty[i],inValue[i]);
   }
   // Set properties for the second model.
   {
-    string inProperty[4]={"TimeStep","ComputeAcceleration",
+    std::string inProperty[4]={"TimeStep","ComputeAcceleration",
 			  "ComputeBackwardDynamics", "ComputeZMP"};
-    string inValue[4]={"0.005","false","false","false"};
+    std::string inValue[4]={"0.005","false","false","false"};
     for(unsigned int i=0;i<4;i++)
       aHDR2->setProperty(inProperty[i],inValue[i]);
 
   }
 
   // Read the first line of actual state:
-  ofstream ASD("ActualStateDescription.dat");
+  std::ofstream ASD("ActualStateDescription.dat");
   if (ASD.is_open())
     {
       for(unsigned int i=0;i<130;i++)
 	{
-	  string tmp;
+	  std::string tmp;
 	  ActualStateFile>> tmp;
-	  ASD  << i << " : " << tmp << endl;
+	  ASD  << i << " : " << tmp << std::endl;
 	}
       ASD.close();
     }
 
-  ofstream RSD("ReferenceStateDescription.dat");
+  std::ofstream RSD("ReferenceStateDescription.dat");
   if (RSD.is_open())
     {
       for(unsigned int i=0;i<99;i++)
 	{
-	  string tmp;
+	  std::string tmp;
 	  RefStateFile>> tmp;
-	  RSD  << i << " : " << tmp << endl;
+	  RSD  << i << " : " << tmp << std::endl;
 	}
       RSD.close();
     }
@@ -466,7 +468,7 @@ int main(int argc, char *argv[])
 
       double lnorm  = NormalForces[0] + NormalForces[1];
 
-      RebuildZMP.open("RebuildZMP.dat",ofstream::app);
+      RebuildZMP.open("RebuildZMP.dat",std::ofstream::app);
       RebuildZMP << (MAL_S4x4_MATRIX_ACCESS_I_J(TrLF,0,3) * NormalForces[0] +
 		     MAL_S4x4_MATRIX_ACCESS_I_J(TrRF,0,3) * NormalForces[1])/ lnorm  << " "
 		 << (MAL_S4x4_MATRIX_ACCESS_I_J(TrLF,1,3) * NormalForces[0] +
@@ -487,20 +489,20 @@ int main(int argc, char *argv[])
 		 << MAL_S4x4_MATRIX_ACCESS_I_J(TrLF2,2,3) << " "
 		 << MAL_S4x4_MATRIX_ACCESS_I_J(TrRF2,0,3) << " "
 		 << MAL_S4x4_MATRIX_ACCESS_I_J(TrRF2,1,3) << " "
-		 << MAL_S4x4_MATRIX_ACCESS_I_J(TrRF2,2,3) << endl;
+		 << MAL_S4x4_MATRIX_ACCESS_I_J(TrRF2,2,3) << std::endl;
       //92
       RebuildZMP.close();
 
       {
 	const matrixNxP & Torques = aHDR->currentTorques();
-	ofstream RebuildTorques;
-	RebuildTorques.open("RebuildTorques.dat",ofstream::app);
+	std::ofstream RebuildTorques;
+	RebuildTorques.open("RebuildTorques.dat",std::ofstream::app);
 	for(unsigned int i=6;i<MAL_MATRIX_NB_ROWS(Torques);i++)
 	  {
 	    RebuildTorques << Torques(i,0) << " "
 			   << ActualData[41-6+i] << " " ;
 	  }
-	RebuildTorques << endl;
+	RebuildTorques << std::endl;
 	RebuildTorques.close();
       }
 

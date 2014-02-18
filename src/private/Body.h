@@ -54,6 +54,8 @@ namespace dynamicsJRLJapan
   */
   class Body : public CjrlBody
   {
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   protected:
 
     /*! \name Physical parameters of the body. */

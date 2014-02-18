@@ -27,6 +27,7 @@
 /* @doc \file Object to copy two humanoid robots
    through the abstract interface. */
 
+#include <iostream>
 #include "HumanoidCopy.h"
 
 using namespace dynamicsJRLJapan;

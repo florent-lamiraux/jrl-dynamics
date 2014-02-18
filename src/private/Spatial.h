@@ -49,6 +49,8 @@ namespace dynamicsJRLJapan
 
     class Velocity
     {
+  public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     public:
       Velocity();
       Velocity(vector3d lv0,vector3d lw);

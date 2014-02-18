@@ -427,7 +427,7 @@ bool JointPrivate::SupdateAcceleration(const vectorN& /*inRobotConfigVector*/,
   vector3d lfext,wfext;
   MAL_S3_VECTOR_FILL(lfext,0);
   MAL_S3_VECTOR_FILL(wfext,0);
-  wfext = currentBody->w_c^g;
+  wfext = currentBody->w_c.cross (g);
   lfext = g;
 
   f_ext = Spatial::Force(lfext,wfext);

@@ -24,6 +24,7 @@
  *  Laboratory (JRL)
  *
  */
+#include <iostream>
 #include <string>
 #include <fstream>
 
@@ -88,8 +89,8 @@ public:
     dRx(2,2) = 1.0;
     
     Final = dRz * Ry * Rx + Rz * dRy * Rx + Rz * Ry * dRx;
-    //cout << "xyz-euler: " << xyz << endl;
-    //cout << "dxdydz-euler: " << dxdydz << endl;
+    //cout << "xyz-euler: " << xyz << std::endl;
+    //cout << "dxdydz-euler: " << dxdydz << std::endl;
     w(0) = Final(2,1);
     w(1) = Final(0,2);
     w(2) = Final(1,0);
@@ -288,9 +289,9 @@ void ExtractActualWaist(CjrlHumanoidDynamicRobot * aHDR2,
 
   MAL_S4x4_INVERSE(CurrentSupportFootPosInWorld,CurrentWorldPosInSupportFoot,double);
 
-  //  cout << "CurrentWorldPosInSupportFoot" << CurrentWorldPosInSupportFoot << endl;
+  //  cout << "CurrentWorldPosInSupportFoot" << CurrentWorldPosInSupportFoot << std::endl;
   MAL_S4x4_C_eq_A_by_B(CurrentWaistPosInSupportFoot,CurrentWorldPosInSupportFoot,CurrentWaistInWorld2);
-  //  cout << "CurrentWaistPosInSupportFoot : " << CurrentWaistPosInSupportFoot << endl;
+  //  cout << "CurrentWaistPosInSupportFoot : " << CurrentWaistPosInSupportFoot << std::endl;
 
   if (NbIt==0)
     {
@@ -362,7 +363,7 @@ void SaveWaistPositions(vector<double> &WaistRef,
     RebuildWaist  << WaistActual[i] << " ";
 
   RebuildWaist << PreviousSupportFoot << " ";
-  RebuildWaist << endl;
+  RebuildWaist << std::endl;
 
   RebuildWaist.close();
 
@@ -382,10 +383,10 @@ void dealWithArguments(int argc, char *argv[],
 
       if ((robotpath==0) || (robotname==0))
 	{
-	  cerr << " This program takes 5 arguments: " << endl;
-	  cerr << "./TestHumanoidDynamicRobot PATH_TO_VRML_FILE VRML_FILE_NAME "<< endl;
-	  cerr << " PATH_TO_SPECIFICITIES_XML PATH PATH_TO_MAP_JOINT_2_RANK" << endl;
-	  cerr << " PosFileName" << endl;
+	  cerr << " This program takes 5 arguments: " << std::endl;
+	  cerr << "./TestHumanoidDynamicRobot PATH_TO_VRML_FILE VRML_FILE_NAME "<< std::endl;
+	  cerr << " PATH_TO_SPECIFICITIES_XML PATH PATH_TO_MAP_JOINT_2_RANK" << std::endl;
+	  cerr << " PosFileName" << std::endl;
 	  exit(-1);
 	}
       else
@@ -427,17 +428,17 @@ void createRobots(ConfigurationFiles_t & aSetOfConfigurationFiles,
 
   if (aHDR==0)
     {
-      cerr<< "Dynamic cast on HDR failed " << endl;
+      std::cerr<< "Dynamic cast on HDR failed " << std::endl;
       exit(-1);
     }
 
   cout << "Robot's model file:" 
        << aSetOfConfigurationFiles.Path 
-       << aSetOfConfigurationFiles.Name << endl;
+       << aSetOfConfigurationFiles.Name << std::endl;
   cout << "Specificities file:" 
-       << aSetOfConfigurationFiles.SpecificitiesFileName << endl;
+       << aSetOfConfigurationFiles.SpecificitiesFileName << std::endl;
   cout << "Map from joint to rank:" 
-       << aSetOfConfigurationFiles.MapFromCjrlJointToRank << endl;
+       << aSetOfConfigurationFiles.MapFromCjrlJointToRank << std::endl;
   aSetOfConfigurationFiles.RobotFileName = aSetOfConfigurationFiles.Path + 
     aSetOfConfigurationFiles.Name;
   parseOpenHRPVRMLFile(*aHDR,
@@ -532,10 +533,10 @@ void saveZMP(CjrlHumanoidDynamicRobot *aHDR,
 	      << robotState.aCurrentAcceleration(0) << " " 
 	      << robotState.aCurrentAcceleration(1) << " " 
 	      << robotState.aCurrentAcceleration(2) << " " 
-	      << endl; // wrt World TMOULARD
+	      << std::endl; // wrt World TMOULARD
   
-  //RebuildZMP << waZMP(0) << " " << waZMP(1) << " 0." << endl; // wrt Waist TMOULARD
-  RebuildZMP << ActualData[0] << " " << waZMP(0) << " " << waZMP(1) << " " << waZMP(2) << endl; // wrt Waist ORAMOS
+  //RebuildZMP << waZMP(0) << " " << waZMP(1) << " 0." << std::endl; // wrt Waist TMOULARD
+  RebuildZMP << ActualData[0] << " " << waZMP(0) << " " << waZMP(1) << " " << waZMP(2) << std::endl; // wrt Waist ORAMOS
   
   RebuildZMP.close();
   RebuildZMPW.close();
@@ -582,8 +583,8 @@ int main(int argc, char *argv[])
 	       ifstream::in);
   if (!PosFile.is_open())
     {
-      cerr << "Unable to open position file: " <<
-	PosFile << endl;
+      std::cerr << "Unable to open position file: " <<
+	PosFile << std::endl;
       exit(-1);
     }
 

@@ -8,6 +8,7 @@
 //
 // See the COPYING file for more information.
 
+#include <stdexcept>
 #include <jrl/dynamics/config.hh>
 
 #ifndef JRL_DYNAMICS_ASSERTION_HH

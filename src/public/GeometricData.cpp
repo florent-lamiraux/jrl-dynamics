@@ -187,10 +187,12 @@ namespace dynamicsJRLJapan
 
 
   BodyGeometricalData::BodyGeometricalData():
-    m_RotationForDisplay(1,0,0, 0,1,0, 0,0,1),
+    m_RotationForDisplay(),
     m_URLs(0),
     m_Shapes(0)
-  {}
+  {
+    m_RotationForDisplay.setIdentity ();
+  }
 
 
   BodyGeometricalData::~BodyGeometricalData()

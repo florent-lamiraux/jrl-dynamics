@@ -54,7 +54,7 @@ namespace dynamicsJRLJapan
   {
 
   public:
-
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     /*! Force vector applied to the body. */
     vector3d m_Force;
     /*! Torque vector applied to the body.  */

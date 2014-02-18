@@ -26,6 +26,7 @@
  *  Laboratory (JRL)
  *
  */
+#include <iostream>
 #include <string>
 #include <cstdio>
 #include "jrl/dynamics/dynamicsfactory.hh"
@@ -40,7 +41,7 @@ void DisplayMatrix4x4(MAL_S4x4_MATRIX(todisplay,double), ostream &os)
 	{
 	  os << MAL_S4x4_MATRIX_ACCESS_I_J(todisplay,i,j) << " " ;
 	}
-      os << endl;
+      os << std::endl;
     }
 }
 
@@ -51,43 +52,43 @@ void RecursiveDisplayOfJoints(CjrlJoint *aJoint, unsigned int verbosedisplay=0)
 
   int NbChildren = aJoint->countChildJoints();
 
-  cout << "CurrentTransformation " <<
-    aJoint->currentTransformation() << endl;
+  std::cout << "CurrentTransformation " <<
+    aJoint->currentTransformation() << std::endl;
 
   if (verbosedisplay>2)
     {
-      cout << "Number of child  :" << NbChildren << endl;
+      std::cout << "Number of child  :" << NbChildren << std::endl;
       for(int i=0;i<NbChildren;i++)
 	{
 	  aJoint = aJoint->childJoint(i);
 	}
 
 
-      cout << "Nb of degree of freedom " <<
-	aJoint->numberDof() << endl;
+      std::cout << "Nb of degree of freedom " <<
+	aJoint->numberDof() << std::endl;
 
       MAL_S4x4_MATRIX_TYPE(double) initialpos = aJoint->initialPosition();
-      cout << "Initial Position ";
-      DisplayMatrix4x4(initialpos,cout);
+      std::cout << "Initial Position ";
+      DisplayMatrix4x4(initialpos,std::cout);
 
       MAL_S4x4_MATRIX_TYPE(double) currentTransformation = aJoint->currentTransformation();
-      cout << "CurrentTransformation ";
-      DisplayMatrix4x4(currentTransformation,cout);
+      std::cout << "CurrentTransformation ";
+      DisplayMatrix4x4(currentTransformation,std::cout);
 
-      cout << " Joint from root to here:" << endl;
+      std::cout << " Joint from root to here:" << std::endl;
       std::vector<CjrlJoint*> JointsFromRootToHere = aJoint->jointsFromRootToThis();
 
-      cout << " Nb of nodes: " << JointsFromRootToHere.size() << endl;
+      std::cout << " Nb of nodes: " << JointsFromRootToHere.size() << std::endl;
 
       CjrlRigidVelocity aRV = aJoint->jointVelocity();
-      cout << " Linear Velocity " << aRV.linearVelocity() << endl;
-      cout << " Angular Velocity " << aRV.rotationVelocity() << endl;
+      std::cout << " Linear Velocity " << aRV.linearVelocity() << std::endl;
+      std::cout << " Angular Velocity " << aRV.rotationVelocity() << std::endl;
       CjrlRigidAcceleration aRA = aJoint->jointAcceleration();
-      cout << " Linear Acceleration " << aRA.linearAcceleration() << endl;
-      cout << " Angular Acceleration " << aRA.rotationAcceleration() << endl;
+      std::cout << " Linear Acceleration " << aRA.linearAcceleration() << std::endl;
+      std::cout << " Angular Acceleration " << aRA.rotationAcceleration() << std::endl;
 
-      cout << "***********************************************" << endl;
-      cout << " Display Now information related to children :" << endl;
+      std::cout << "***********************************************" << std::endl;
+      std::cout << " Display Now information related to children :" << std::endl;
     }
 
   for(int i=0;i<NbChildren;i++)
@@ -103,7 +104,7 @@ void DisplayDynamicRobotInformation(CjrlDynamicRobot *aDynamicRobot)
 {
   std::vector<CjrlJoint *> aVec = aDynamicRobot->jointVector();
   int r = aVec.size();
-  cout << "Number of joints :" << r << endl;
+  std::cout << "Number of joints :" << r << std::endl;
 }
 
 void DisplayMatrix(MAL_MATRIX_TYPE(double) &aJ)
@@ -127,9 +128,9 @@ int main(int argc, char *argv[])
 
   if (argc!=6)
     {
-      cerr << " This program takes 5 arguments: " << endl;
-      cerr << "./TestHumanoidDynamicRobot PATH_TO_VRML_FILE VRML_FILE_NAME "<< endl;
-      cerr << " PATH_TO_SPECIFICITIES_XML PATH PATH_TO_MAP_JOINT_2_RANK REDUCED_PATH_TO_MAP_JOINT_2_RANK" << endl;
+      cerr << " This program takes 5 arguments: " << std::endl;
+      cerr << "./TestHumanoidDynamicRobot PATH_TO_VRML_FILE VRML_FILE_NAME "<< std::endl;
+      cerr << " PATH_TO_SPECIFICITIES_XML PATH PATH_TO_MAP_JOINT_2_RANK REDUCED_PATH_TO_MAP_JOINT_2_RANK" << std::endl;
       exit(-1);
     }
 
@@ -154,7 +155,7 @@ int main(int argc, char *argv[])
 					 aMapFromJointToRank,aSpecificitiesFileName);
 
   // Display tree of the joints.
-  cout << "Small model" << endl;
+  std::cout << "Small model" << std::endl;
   rootJoint = aHDRSmall->rootJoint();
 
   // Test the tree.
@@ -223,25 +224,25 @@ int main(int argc, char *argv[])
   rootJoint = aHDR->rootJoint();
 
   // Test the tree.
-  cout << "Normal model" << endl;
+  std::cout << "Normal model" << std::endl;
   RecursiveDisplayOfJoints(rootJoint);
 
   // Display tree of the joints.
-  cout << "Small model" << endl;
+  std::cout << "Small model" << std::endl;
   rootJoint = aHDRSmall->rootJoint();
 
   // Test the tree.
   RecursiveDisplayOfJoints(rootJoint);
 
   ZMPval = aHDR->zeroMomentumPoint();
-  cout << "Normal model" << endl;
-  cout << "Value of ZMP : " << ZMPval <<endl;
-  cout << "Should be equal to the CoM: " << aHDR->positionCenterOfMass() << endl;
+  std::cout << "Normal model" << std::endl;
+  std::cout << "Value of ZMP : " << ZMPval <<std::endl;
+  std::cout << "Should be equal to the CoM: " << aHDR->positionCenterOfMass() << std::endl;
 
   ZMPval = aHDRSmall->zeroMomentumPoint();
-  cout << "Small model" << endl;
-  cout << "Value of ZMP : " << ZMPval <<endl;
-  cout << "Should be equal to the CoM: " << aHDRSmall->positionCenterOfMass() << endl;
+  std::cout << "Small model" << std::endl;
+  std::cout << "Value of ZMP : " << ZMPval <<std::endl;
+  std::cout << "Should be equal to the CoM: " << aHDRSmall->positionCenterOfMass() << std::endl;
 
   std::vector<CjrlJoint *> aVec = aHDRSmall->jointVector();
   aVec[22]->computeJacobianJointWrtConfig();
